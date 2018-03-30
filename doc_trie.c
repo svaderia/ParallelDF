@@ -1,5 +1,4 @@
 #include "_TRIE.h"
-#include "_LINKED_LIST.h"
 #include <string.h>
 
 #define _DOC_TRIE

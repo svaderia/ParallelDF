@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
-#include "_LINKED_LIST.h"
+//#include "_LINKED_LIST.h"
 
 #ifndef _TRIE
 #define _TRIE
@@ -24,7 +24,9 @@ TrieNode* get_Node(void);
 
 TrieNode* trie_insert(TrieNode *root, char *key, int current_doc);
 
-TrieNode* merge_trie(TrieNode *base,TrieNode *droot)
+TrieNode* merge_trie(TrieNode *base,TrieNode *droot);
+
+int* divide(int num_of_proc)
 
 //char* convert_to_lower(char* str);
 
