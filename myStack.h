@@ -36,4 +36,7 @@ void* top(Stack* stack);
 bool is_empty(Stack* stack);
 // Return true if stack is empty, false otherwise.
 
+Stack* push_multiple(Stack* stack, void** data, int size);
+// Adds Nodes with data Element to the front of the Stack.
+
 #endif
