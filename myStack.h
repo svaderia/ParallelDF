@@ -11,26 +11,29 @@ struct Node{
 };
 typedef struct Node Node;
 
-struct List{
+struct Stack{
 	Node* head;
 	Node* tail;
 	unsigned int size;
 };
-typedef struct List List;
+typedef struct Stack Stack;
 
-List* create_list(void);
-// Returns an initialized List structure.
+Stack* new_stack(void);
+// Returns an initialized Stack structure.
 
 Node* create_node(void* data);
 // Returns a Node structure initialized by data Element.
 
-List* push(List* list, void* data);
-// Adds a Node with data Element to the front of the List.
+Stack* push(Stack* stack, void* data);
+// Adds a Node with data Element to the front of the Stack.
 
-List* pop(List* list);
-// Deletes a Node from the front of the list.
+Stack* pop(Stack* stack);
+// Deletes a Node from the front of the stack.
 
-bool is_empty(List* list);
-// Return true if list is empty, false otherwise.
+void* top(Stack* stack);
+// Returns the element on top of the stack.
+
+bool is_empty(Stack* stack);
+// Return true if stack is empty, false otherwise.
 
 #endif

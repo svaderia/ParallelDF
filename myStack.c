@@ -4,12 +4,12 @@
 #include "myStack.h"
 
 const char* _MEM_ALLOC_ERROR_MSG = "Error in Heap Memory allocation.";
-const char* _EMPTY_LIST_ERROR = "List is already empty. No more deletion possible.";
+const char* _EMPTY_LIST_ERROR = "Stack is already empty. No more deletion possible.";
 
-List* create_list(){
-	List* temp = (List*) malloc(sizeof(List));
+Stack* new_stack(){
+	Stack* temp = (Stack*) malloc(sizeof(Stack));
 	if(temp == NULL){
-		printf("%s :: Linked List\n", _MEM_ALLOC_ERROR_MSG);
+		printf("%s :: Linked Stack\n", _MEM_ALLOC_ERROR_MSG);
 		return NULL;
 	}else{
 		temp -> head = NULL;
@@ -31,45 +31,49 @@ Node* create_node(void* data){
 	}
 }
 
-List* push(List* list, void* data){
+Stack* push(Stack* stack, void* data){
 	Node* new_node = create_node(data);
 	if(new_node == NULL){
 		return NULL;
 	}
 	
-	if(list -> size == 0){
-		list -> head = new_node;
-		list -> tail = new_node;
+	if(stack -> size == 0){
+		stack -> head = new_node;
+		stack -> tail = new_node;
 	}else{
-		new_node -> next = list -> head;
-		list -> head = new_node;
+		new_node -> next = stack -> head;
+		stack -> head = new_node;
 	}
-	list -> size ++;
+	stack -> size ++;
 
-	return list;
+	return stack;
 }
 
-List* pop(List* list){
-	Node* del_node = list -> head;
+Stack* pop(Stack* stack){
+	Node* del_node = stack -> head;
 
-	if(list -> size == 0){
+	if(stack -> size == 0){
 		printf("%s\n", _EMPTY_LIST_ERROR);
 		return NULL;
-	}else if(list -> size == 1){
-		list -> head = NULL;
-		list -> tail = NULL;
+	}else if(stack -> size == 1){
+		stack -> head = NULL;
+		stack -> tail = NULL;
 		free(del_node);
 	}else{
-		list -> head = list -> head -> next;
+		stack -> head = stack -> head -> next;
 		free(del_node);
 	}
-	list -> size --;
+	stack -> size --;
 
-	return list;
+	return stack;
 }
 
-bool is_empty(List* list){
-	if(list -> size == 0){
+void* top(Stack* stack){
+	return stack -> head -> ele;
+}
+
+bool is_empty(Stack* stack){
+	if(stack -> size == 0){
 		return true;
 	}else{
 		return false;

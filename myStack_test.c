@@ -19,7 +19,7 @@ int main(){
 	e2 -> data = 2;
 	e3 -> data = 3;
 
-	List* temp = create_list();
+	Stack* temp = new_stack();
 	printf("%d\n", temp -> size);
 	temp = push(temp, e1);
 	temp = push(temp, e2);
