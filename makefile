@@ -9,3 +9,6 @@ myStack.o : myStack.c myStack.h
 
 myStack_test.o : myStack_test.c myStack.h
 	gcc -c myStack_test.c
+
+mytrie.o : doc_trie.c _TRIE.h
+	gcc -c .doc_trie.c
