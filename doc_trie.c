@@ -44,7 +44,7 @@ TrieNode* trie_insert(TrieNode *root, char *key, int current_doc){
     return root;
 }
  
-bool doc_search(struct TrieNode *root, const char *key){
+bool trie_search(struct TrieNode *root, const char *key){
     int depth, len = strlen(key), index;
     TrieNode* iter = root;
  
@@ -59,6 +59,41 @@ bool doc_search(struct TrieNode *root, const char *key){
     return (iter != NULL && iter -> end);
 }
 
+
+TrieNode* dfs(TrieNode *bnode,TrieNode *dnode)
+{   int i = 0;  
+    if( dnode -> end)
+    {
+       cnode -> frequency += frequency;
+       cnode -> end = true;
+    }
+    
+    for( i = 0; i < ALPHABET_SIZE; i++ )
+    {
+        if( dnode -> children[i] )
+        {
+            if (!bnode -> children[i])
+                bnode -> children[i] = get_Node();
+            cnode -> children[i] = dfs(bnode -> children[i],dnode -> children[i]);
+        }     
+    }
+    return bnode;
+}
+
+TrieNode* merge_trie(TrieNode *base,TrieNode *droot)
+{   
+    return dfs( base, droot);
+}
+
+int trie_free(TrieNode* dnode){
+    int i,k=1;
+    for(i=0; i< ALPHABET_SIZE; i++){
+        if(dnode -> children[i])
+            k+=trie_free( dnode -> children[i]);
+    }
+    free(dnode);
+    return k;
+}
 
 // int main(){
 //     // Input keys (use only 'a' through 'z' and lower case)

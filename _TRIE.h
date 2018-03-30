@@ -22,14 +22,14 @@ typedef struct TrieNode TrieNode;
 
 TrieNode* get_Node(void);
 
-TrieNode* trie_insert(TrieNode *root, char *key);
+TrieNode* trie_insert(TrieNode *root, char *key, int current_doc);
 
-TrieNode* trie_merge(TrieNode *croot1,TrieNode *croot2);
+TrieNode* merge_trie(TrieNode *base,TrieNode *droot)
 
-char* convert_to_lower(char* str);
+//char* convert_to_lower(char* str);
 
-char index_to_char(int index);
+//char index_to_char(int index);
 
-int doc_free(TrieNode* dnode);
+int trie_free(TrieNode* dnode);
 
 #endif
