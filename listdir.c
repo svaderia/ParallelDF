@@ -3,18 +3,20 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <stdbool.h>
+#include <string.h>
+#include "traversal.h"
 
-int is_file(char *path)
-{
+bool is_file(char *path){
     struct stat path_stat;
     stat(path, &path_stat);
-    return S_ISREG(path_stat.st_mode);
+    return (bool)S_ISREG(path_stat.st_mode);
 }
 
-int is_directory(char *path) {
+bool is_directory(char *path){
     struct stat path_stat;
     stat(path, &path_stat);
-    return S_ISDIR(path_stat.st_mode);
+    return (bool)S_ISDIR(path_stat.st_mode);
 }
 
 
@@ -98,7 +100,7 @@ char** get_dir_list(char* folder_name, int* dir_count){
     return dir_List;
 }
 
-int main(){
+// int main(){
     
-    return 0;
-}
+//     return 0;
+// }

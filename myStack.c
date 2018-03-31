@@ -79,11 +79,3 @@ bool is_empty(Stack* stack){
 		return false;
 	}
 }
-
-Stack* push_multiple(Stack* stack, void** data, int size){
-	int i = 0;
-	for(i = 0; i < size; i++){
-		stack = push(stack, data[i]);
-	}
-	return stack;
-}

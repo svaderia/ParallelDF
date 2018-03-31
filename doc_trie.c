@@ -88,7 +88,7 @@ int trie_free(TrieNode* dnode){
     int i,k=1;
     for(i=0; i< ALPHABET_SIZE; i++){
         if(dnode -> children[i])
-            k+=trie_free( dnode -> children[i]);
+            k += trie_free(dnode -> children[i]);
     }
     free(dnode);
     return k;
