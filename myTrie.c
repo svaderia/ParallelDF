@@ -4,8 +4,6 @@
 #define _DOC_TRIE
 
 #define ARRAY_SIZE(a) sizeof(a)/sizeof(a[0])
- 
-#define CHAR_TO_INDEX(c) ((int)c - (int)'a')
 
 TrieNode* get_Node(void){
     TrieNode *temp = (TrieNode*) malloc(sizeof(TrieNode));
