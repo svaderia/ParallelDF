@@ -31,8 +31,10 @@ FileNode** pTs_to_push(char** items, int depth, int num_items){
 
 FileNode* get_next_file(Stack* stack, int last_depth){
 	FileNode* pT = (FileNode*) top(stack);
-	char cwd[1024];
-	memset(cwd, '\0', 1024 * sizeof(char));
+	// char cwd[1024];
+	// memset(cwd, '\0', 1024 * sizeof(char));
+    if(pT == NULL) return NULL;
+    
 	int curr_depth = pT -> depth;
 	int num_files;
 	int num_dirs;
@@ -42,22 +44,22 @@ FileNode* get_next_file(Stack* stack, int last_depth){
 
 		while(last_depth - (pT -> depth) > 0){
 			chdir("..");
-			getcwd(cwd, sizeof(cwd));
-			printf("%s\n", cwd);
+			// getcwd(cwd, sizeof(cwd));
+			// printf("%s\n", cwd);
 			last_depth --;
 		}
 
 		while(curr_depth - (pT -> depth) > 0){
 			chdir("..");
-			getcwd(cwd, sizeof(cwd));
-			printf("%s\n", cwd);
+			// getcwd(cwd, sizeof(cwd));
+			// printf("%s\n", cwd);
 			curr_depth --;
 		}
 
 		if(is_directory(pT -> name)){
 			chdir(pT -> name);
-			getcwd(cwd, sizeof(cwd));
-			printf("%s\n", cwd);
+			// getcwd(cwd, sizeof(cwd));
+			// printf("%s\n", cwd);
 			
 			char** files = get_file_list(pT -> name, &num_files);
 			char** dirs = get_dir_list(pT -> name, &num_dirs);
@@ -81,20 +83,20 @@ FileNode* get_next_file(Stack* stack, int last_depth){
 	return pT;
 }
 
-int main(){
+// int main(){
 
-	Stack* stack = new_stack();
-	FileNode* temp = (FileNode*) malloc(sizeof(FileNode));
-	temp -> name = (char*) malloc(30 * sizeof(char));
-	memset(temp -> name, '\0', 30 * sizeof(char));
-	memcpy(temp -> name, "/home/jbnerd/", 26 * sizeof(char));
-	temp -> depth = 1;
-	stack = push(stack, temp);
+// 	Stack* stack = new_stack();
+// 	FileNode* temp = (FileNode*) malloc(sizeof(FileNode));
+// 	temp -> name = (char*) malloc(30 * sizeof(char));
+// 	memset(temp -> name, '\0', 30 * sizeof(char));
+// 	memcpy(temp -> name, "/home/jbnerd/", 26 * sizeof(char));
+// 	temp -> depth = 1;
+// 	stack = push(stack, temp);
 
-	FileNode* pT = get_next_file(stack, 1);
-	printf("%s\n", pT -> name);
-	pT = get_next_file(stack, pT -> depth);
-	printf("%s\n", pT -> name);
+// 	FileNode* pT = get_next_file(stack, 1);
+// 	printf("%s\n", pT -> name);
+// 	pT = get_next_file(stack, pT -> depth);
+// 	printf("%s\n", pT -> name);
 
-	return 0;
-}
+// 	return 0;
+// }
