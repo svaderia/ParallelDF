@@ -26,7 +26,7 @@ TrieNode* trie_insert(TrieNode *root, char *key, int current_doc);
 
 TrieNode* merge_trie(TrieNode *base,TrieNode *droot);
 
-int* divide(int num_of_proc)
+int* divide(int num_of_proc);
 
 //char* convert_to_lower(char* str);
 
