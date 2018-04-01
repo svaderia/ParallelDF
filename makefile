@@ -1,14 +1,38 @@
-#### MAKEFILE ####
+run : exe
+	./exe
 
+gdb : exe
+	gdb ./exe
 
-stack_exe : myStack_test.o myStack.o
-	gcc -o stack_exe myStack.c myStack_test.c
+compileAll : driver.o myTrie.o myStack.o myRead.o traversal.o listdir.o
+	gcc -g -fopenmp -o exe driver.o myTrie.o myStack.o myRead.o traversal.o listdir.o
+
+driver.o : driver.c
+	gcc -g -fopenmp -c driver.c
+
+myTrie.o : myTrie.c myTrie.h
+	gcc -g -fopenmp -c myTrie.c
 
 myStack.o : myStack.c myStack.h
-	gcc -c myStack.c
+	gcc -g -fopenmp -c myStack.c
+
+myRead.o : myRead.c myRead.h
+	gcc -g -fopenmp -c myRead.c
+
+traversal.o : traversal.c traversal.h myStack.h
+	gcc -g -fopenmp -c traversal.c
+
+listdir.o : listdir.c traversal.h
+	gcc -g -fopenmp -c listdir.c
+
+traverse : traversal.o listdir.o myStack.o
+	gcc -g -fopenmp -o traverse_exe traversal.o listdir.o myStack.o
 
 myStack_test.o : myStack_test.c myStack.h
-	gcc -c myStack_test.c
+	gcc -g -fopenmp -c myStack_test.c
 
-mytrie.o : doc_trie.c _TRIE.h
-	gcc -c .doc_trie.c
+stack_exe : myStack_test.o myStack.o
+	gcc -g -fopenmp -o stack_exe myStack.c myStack_test.c
+
+clean :
+	rm *.o exe

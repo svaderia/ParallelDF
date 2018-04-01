@@ -1,4 +1,4 @@
-#include "_TRIE.h"
+#include "myTrie.h"
 #include <string.h>
 
 #define _DOC_TRIE
@@ -15,7 +15,7 @@ TrieNode* get_Node(void){
         int i;
         temp -> end = false;
         temp -> frequency = 0;
-        temp ->last_doc = -1;
+        temp -> last_doc = -1;
         for (i = 0; i < ALPHABET_SIZE; i++){
             temp -> children[i] = NULL;
         }
@@ -31,13 +31,14 @@ TrieNode* trie_insert(TrieNode *root, char *key, int current_doc){
     for (depth = 0; depth < len; depth++){
         index = CHAR_TO_INDEX(key[depth]);
         if (!iter -> children[index]){
-            iter -> children[index] = get_doc_Node();
+            iter -> children[index] = get_Node();
         } 
         iter = iter -> children[index];
     }
+
     if(current_doc != iter -> last_doc){
-    iter -> frequency ++;
-    iter -> end = true;
+        iter -> frequency ++;
+        iter -> end = true;
     }
 
     return root;
@@ -59,36 +60,37 @@ bool trie_search(struct TrieNode *root, const char *key){
 }
 
 
-TrieNode* dfs(TrieNode *bnode,TrieNode *dnode)
-{   int i = 0;  
-    if( dnode -> end)
-    {
-       cnode -> frequency += frequency;
-       cnode -> end = true;
+TrieNode* merge_trie(TrieNode *bnode, TrieNode *dnode){
+    int i = 0;
+
+    if(bnode == NULL){
+        bnode = get_Node();
+    }
+
+    if(dnode == NULL){
+        return bnode;
+    }
+
+    if(dnode -> end){
+       bnode -> frequency += dnode -> frequency;
+       bnode -> end = true;
     }
     
-    for( i = 0; i < ALPHABET_SIZE; i++ )
-    {
-        if( dnode -> children[i] )
-        {
-            if (!bnode -> children[i])
+    for(i = 0; i < ALPHABET_SIZE; i++){
+        if(dnode -> children[i]){
+            if(!bnode -> children[i])
                 bnode -> children[i] = get_Node();
-            cnode -> children[i] = dfs(bnode -> children[i],dnode -> children[i]);
-        }     
+            bnode -> children[i] = merge_trie(bnode -> children[i], dnode -> children[i]);
+        }
     }
     return bnode;
-}
-
-TrieNode* merge_trie(TrieNode *base,TrieNode *droot)
-{   
-    return dfs( base, droot);
 }
 
 int trie_free(TrieNode* dnode){
     int i,k=1;
     for(i=0; i< ALPHABET_SIZE; i++){
         if(dnode -> children[i])
-            k+=trie_free( dnode -> children[i]);
+            k += trie_free(dnode -> children[i]);
     }
     free(dnode);
     return k;
