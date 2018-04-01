@@ -69,7 +69,11 @@ Stack* pop(Stack* stack){
 }
 
 void* top(Stack* stack){
-	return stack -> head -> ele;
+    if(stack -> head != NULL){
+        return stack -> head -> ele;
+    }else{
+        return NULL;
+    }
 }
 
 bool is_empty(Stack* stack){
