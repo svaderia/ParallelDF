@@ -1,5 +1,4 @@
 #include "_TRIE.h"
-//#include "_LINKED_LIST.h"
 #include "stdlib.h"
 #include "stdio.h"
 

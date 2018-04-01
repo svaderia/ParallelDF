@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
-//#include "_LINKED_LIST.h"
 
 #ifndef _TRIE
 #define _TRIE
