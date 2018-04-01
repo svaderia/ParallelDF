@@ -78,17 +78,20 @@ char** get_dir_list(char* folder_name, int* dir_count){
         return NULL;
     }
 
-    char** dir_List = (char**) malloc((*dir_count) * sizeof(char*));
+    *dir_count -= 2;
+    char** dir_List = (char**) malloc((*dir_count)  * sizeof(char*));
     int i = 0;
     
     if ((dir = opendir (folder_name)) != NULL) {
         /* print all the files and directories within directory */
         while ((ent = readdir (dir)) != NULL) {
             if (ent->d_type == DT_DIR){
-             dir_List[i] =  (char*) malloc(strlen(ent->d_name)*sizeof(char));
-                strcpy (dir_List[i], ent->d_name);
-                // printf ("%s\n", dir_List[i]);
-                i++;
+                dir_List[i] =  (char*) malloc(strlen(ent->d_name)*sizeof(char));
+                if(strcmp(ent->d_name, ".") != 0 || strcmp(ent->d_name, "..") != 0){
+                    strcpy (dir_List[i], ent->d_name);
+                    // printf ("%s\n", dir_List[i]);
+                    i++;
+                }
             }
         }
         closedir (dir);
