@@ -45,7 +45,7 @@ char** get_file_list(char* folder_name, int* file_count){
         /* print all the files and directories within directory */
         while ((ent = readdir (dir)) != NULL) {
             if (ent->d_type == DT_REG){
-                file_list[i] =  (char*) malloc(strlen(ent->d_name)*sizeof(char));
+                file_list[i] =  (char*) malloc((strlen(ent->d_name) + 1)*sizeof(char));
                 strcpy(file_list[i], ent->d_name);
                 // printf ("%s\n", file_list[i]);
                 i++;
@@ -78,7 +78,7 @@ char** get_dir_list(char* folder_name, int* dir_count){
         return NULL;
     }
 
-    *dir_count -= 2;
+    (*dir_count) -= 2;
     char** dir_List = (char**) malloc((*dir_count)  * sizeof(char*));
     int i = 0;
     
@@ -86,8 +86,8 @@ char** get_dir_list(char* folder_name, int* dir_count){
         /* print all the files and directories within directory */
         while ((ent = readdir (dir)) != NULL) {
             if (ent->d_type == DT_DIR){
-                dir_List[i] =  (char*) malloc(strlen(ent->d_name)*sizeof(char));
-                if(strcmp(ent->d_name, ".") != 0 || strcmp(ent->d_name, "..") != 0){
+                if(strcmp(ent->d_name, ".") != 0 && strcmp(ent->d_name, "..") != 0){
+                    dir_List[i] =  (char*) malloc((strlen(ent->d_name) + 1)*sizeof(char));
                     strcpy (dir_List[i], ent->d_name);
                     // printf ("%s\n", dir_List[i]);
                     i++;
