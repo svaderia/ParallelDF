@@ -39,6 +39,7 @@ TrieNode* trie_insert(TrieNode *root, char *key, int current_doc){
     if(current_doc != iter -> last_doc){
         iter -> frequency ++;
         iter -> end = true;
+        iter -> last_doc = current_doc;
     }
 
     return root;
