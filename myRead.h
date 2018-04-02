@@ -7,9 +7,9 @@
 #define _TOKEN
 #define MAX_WORD_SIZE 140
 
-extern int offset;
+// extern int offset;
 
-extern bool eof;
+// extern bool eof;
 
 typedef char* buffer;
 
@@ -17,6 +17,6 @@ char** read_arr(FILE* fptr, int* size);
 
 bool search(char** arr, char* key, int lo, int hi);
 
-char* getWord(FILE* fp, char* b, int k);
+char* getWord(FILE* fp, char* b, int k, int* offset, bool* eof);
 
 #endif

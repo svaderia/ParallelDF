@@ -4,39 +4,39 @@
 #include <dirent.h>
 #include "myRead.h"
 
-int offset = 0;
-bool eof = false;
+// int offset = 0;
+// bool eof = false;
 
-FILE *getStream(FILE *fp, char* b, int k)
+FILE *getStream(FILE *fp, char* b, int k, bool* eof)
 {	int count = -1;
-	if (!eof)
+	if (!(*eof))
         count = fread(b, 1, k, fp);
     //hack
-    if(count < k) eof = true ;
+    if(count < k) (*eof) = true ;
     b[count] = '\0';
     return fp;
 }
 
-char* getWord(FILE* fp, char* b, int k){
+char* getWord(FILE* fp, char* b, int k, int* offset, bool* eof){
     char* temp = (char*) malloc(MAX_WORD_SIZE * sizeof(char));
     int i = 0;
     memset(temp, 0, MAX_WORD_SIZE);
     while(1){
-        if (offset == k || strlen(b) == 0 || b[offset] == '\0'){
-			if( eof ){
+        if ((*offset) == k || strlen(b) == 0 || b[(*offset)] == '\0'){
+			if( *eof ){
 				return temp;
 			}
 			memset(b, 0, k);
-            fp = getStream(fp, b, k);
-            offset = 0;
+            fp = getStream(fp, b, k, eof);
+            (*offset) = 0;
 		}
-        if(('a' <= b[offset] && b[offset] <= 'z') || ('A' <= b[offset] && b[offset] <= 'Z')){
-            temp[i++] = b[offset++];
+        if(('a' <= b[(*offset)] && b[(*offset)] <= 'z') || ('A' <= b[(*offset)] && b[(*offset)] <= 'Z')){
+            temp[i++] = b[(*offset)++];
             if(temp[i-1] >= 'A' && temp[i-1] <= 'Z'){
                 temp[i-1] += 'a' - 'A';
             }
         }else{
-            offset++;
+            (*offset)++;
             if(temp[0] == '\0') continue;
             else return temp;
         }
