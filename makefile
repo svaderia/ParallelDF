@@ -4,8 +4,8 @@ run : exe
 gdb : exe
 	gdb ./exe
 
-compileAll : driver.o myTrie.o myStack.o myRead.o traversal.o listdir.o
-	gcc -g -fopenmp -o exe driver.o myTrie.o myStack.o myRead.o traversal.o listdir.o
+compileAll : driver.o myTrie.o myStack.o myRead.o traversal.o listdir.o topk_heap.o
+	gcc -g -fopenmp -o exe driver.o myTrie.o myStack.o myRead.o traversal.o listdir.o topk_heap.o
 
 driver.o : driver.c
 	gcc -g -fopenmp -c driver.c
@@ -24,6 +24,9 @@ traversal.o : traversal.c traversal.h myStack.h
 
 listdir.o : listdir.c traversal.h
 	gcc -g -fopenmp -c listdir.c
+
+topk_heap.o : topk_heap.c myHeap.h myTrie.o
+	gcc -g -fopenmp -c topk_heap.c
 
 traverse : traversal.o listdir.o myStack.o
 	gcc -g -fopenmp -o traverse_exe traversal.o listdir.o myStack.o
