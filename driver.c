@@ -2,6 +2,7 @@
 #include "myStack.h"
 #include "traversal.h"
 #include "myRead.h"
+#include "myHeap.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -38,21 +39,23 @@ char** load_stopwords(){
 }
 
 void process_doc(FILE* doc, TrieNode* doc_root, int current_doc, char** stopwords){
+    
     char* b = (char*) malloc(4096 * sizeof(char));
     char* word_buffer;
     int k = 4096;
 
-    offset = 0;
-    eof = false;
+    int offset = 0;
+    bool eof = false;
     memset(b, 0, k);
 
     while(1){
-        word_buffer = getWord(doc, b, k);
+        word_buffer = getWord(doc, b, k, &offset, &eof);
         if(search(stopwords, word_buffer, 0, 570) == 1){
             free(word_buffer);
             continue;
         }
-        printf("%s\n", word_buffer);
+        // #pragma omp critical (a)
+            // printf("%s\n", word_buffer);
         doc_root = trie_insert(doc_root, word_buffer, current_doc);
         free(word_buffer);
         if( offset >= strlen(b) && eof ) break;
@@ -62,7 +65,11 @@ void process_doc(FILE* doc, TrieNode* doc_root, int current_doc, char** stopword
 TrieNode* merge_all(TrieNode* g_trie, TrieNode** trie_list, int num_threads, int alpha){
     int i;
     for(i = 0; i < num_threads; i++){
-        g_trie = merge_trie(g_trie -> children [alpha], trie_list[i] -> children [alpha]);
+        if(trie_list[i] -> children[alpha]){
+            if(!g_trie -> children[alpha])
+                g_trie -> children[alpha] = get_Node();
+            g_trie -> children[alpha] = merge_trie(g_trie -> children[alpha], trie_list[i] -> children[alpha]);
+        }
     }
     return g_trie;
 }
@@ -93,7 +100,7 @@ void main(int argc, char* argv[]){
     char** list_of_words = load_stopwords();
 
     // Making of thread level Tries
-    #pragma omp parallel default(shared) 
+    #pragma omp parallel default(shared)
     {
         FileNode* pT;
         int last_doc = 0;
@@ -102,12 +109,13 @@ void main(int argc, char* argv[]){
 
         // Update of Thread-Level Trie on receiving a document
         while(true){
-            #pragma omp critical
+            #pragma omp critical (new)
             {
                 pT = get_next_file(stack, last_depth);
                 if(pT != NULL){
                     last_depth = pT -> depth;
-                    printf("Fname: %s \n", pT->name);
+                    int id = omp_get_thread_num();
+                    // printf("Fname: %s : %d \n", pT->name, id);
                     doc = fopen(pT->name, "r");
                     if(doc == NULL){
                         perror("Can not open File");
@@ -129,4 +137,23 @@ void main(int argc, char* argv[]){
             g_trie = merge_all(g_trie, trie_list, num_threads, i);
         }
     }
+
+
+    char* buffer = (char*) malloc(30 * sizeof(char));
+    memset(buffer, '\0', 30 * sizeof(char));
+
+    // trie_list[0] = print_trie(trie_list[0], -1, buffer, 0);
+    // trie_list[1] = print_trie(trie_list[1], -1, buffer, 0);
+    // trie_list[2] = print_trie(trie_list[2], -1, buffer, 0);
+    // trie_list[3] = print_trie(trie_list[3], -1, buffer, 0);
+    // printf("\nfinal\n");
+    // g_trie = print_trie(g_trie, -1, buffer, 0);
+
+    int heapsize = 0, capacity= 2;
+    MaxHeapNode** test = (MaxHeapNode**) malloc(capacity * sizeof(MaxHeapNode*));
+    test = make_heap_from_trie(g_trie, test, &heapsize, &capacity, -1, buffer, 0);
+    // printf("%d %d\n", heapsize, capacity);
+    print(test, heapsize);
+    test = buildHeap(test, heapsize - 1);
+    print_topk(test, &heapsize, 2);
 }
