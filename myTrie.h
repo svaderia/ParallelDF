@@ -33,4 +33,6 @@ int* divide(int num_of_proc);
 
 int trie_free(TrieNode* dnode);
 
+TrieNode* print_trie(TrieNode* root, int alpha, char* buffer, int iter);
+
 #endif

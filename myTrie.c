@@ -5,6 +5,8 @@
 
 #define ARRAY_SIZE(a) sizeof(a)/sizeof(a[0])
 
+#define INDEX_TO_CHAR(i) (char)(i + 'a')
+
 TrieNode* get_Node(void){
     TrieNode *temp = (TrieNode*) malloc(sizeof(TrieNode));
     temp -> children = (TrieNode**) malloc(ALPHABET_SIZE * sizeof(TrieNode*));
@@ -61,14 +63,6 @@ bool trie_search(struct TrieNode *root, const char *key){
 TrieNode* merge_trie(TrieNode *bnode, TrieNode *dnode){
     int i = 0;
 
-    if(bnode == NULL){
-        bnode = get_Node();
-    }
-
-    if(dnode == NULL){
-        return bnode;
-    }
-
     if(dnode -> end){
        bnode -> frequency += dnode -> frequency;
        bnode -> end = true;
@@ -92,6 +86,32 @@ int trie_free(TrieNode* dnode){
     }
     free(dnode);
     return k;
+}
+
+TrieNode* print_trie(TrieNode* root, int alpha, char* buffer, int iter){
+    if(alpha != -1){
+        buffer[iter] = INDEX_TO_CHAR(alpha);
+    }
+
+    if(root -> end){
+        printf("%s\n", buffer);
+    }
+
+    for(int i = 0; i < ALPHABET_SIZE; i++){
+        if(root -> children[i] && alpha == -1){
+            root -> children[i] = print_trie(root -> children[i], i, buffer, iter);
+        }else if(root -> children[i]){
+            root -> children[i] = print_trie(root -> children[i], i, buffer, iter + 1);
+        }
+    }
+
+    if(alpha == -1){
+        buffer[iter] = '\0';
+    }else{
+        buffer[iter + 1] = '\0';    
+    }
+
+    return root;
 }
 
 // int main(){
