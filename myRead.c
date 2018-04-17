@@ -22,6 +22,9 @@ char* getWord(FILE* fp, char* b, int k, int* offset, bool* eof){
     int i = 0;
     memset(temp, 0, MAX_WORD_SIZE);
     while(1){
+        if(i > MAX_WORD_SIZE - 2){
+            return temp;
+        }
         if ((*offset) == k || strlen(b) == 0 || b[(*offset)] == '\0'){
 			if( *eof ){
 				return temp;
