@@ -46,7 +46,7 @@ FileNode* get_next_file(Stack* stack, int last_depth){
             while(curr_depth - (pT -> depth) > 0){
                 chdir("..");
                 getcwd(cwd, sizeof(cwd));
-                printf("cwd cd: %s\n", cwd);
+                // printf("cwd cd: %s\n", cwd);
                 curr_depth --;
 		    }
 
@@ -60,7 +60,7 @@ FileNode* get_next_file(Stack* stack, int last_depth){
             while(last_depth - (pT -> depth) > 0){
                 chdir("..");
                 getcwd(cwd, sizeof(cwd));
-                printf("cwd ld: %s\n", cwd);
+                // printf("cwd ld: %s\n", cwd);
                 last_depth --;
             }
         }
@@ -72,7 +72,7 @@ FileNode* get_next_file(Stack* stack, int last_depth){
 
             chdir(pT -> name);
 			getcwd(cwd, sizeof(cwd));
-			printf("cwd: %s\n", cwd);
+			// printf("cwd: %s\n", cwd);
 
 			FileNode** files_to_push = pTs_to_push(files, (pT -> depth) + 1, num_files);
 			FileNode** dirs_to_push = pTs_to_push(dirs, (pT -> depth) + 1, num_dirs);
@@ -92,6 +92,41 @@ FileNode* get_next_file(Stack* stack, int last_depth){
 		}
 	}
 	return pT;
+}
+
+void dfs(Stack* stack){
+    if(is_empty(stack)) return ;
+    FileNode* pT = (FileNode*) top(stack);
+    stack = pop(stack);
+    int num_files, num_dirs;
+    if(is_directory(pT->name)){
+        char** files = get_file_list(pT -> name, &num_files);
+        char** dirs = get_dir_list(pT -> name, &num_dirs);
+        chdir(pT->name);
+        
+        FileNode** files_to_push = pTs_to_push(files, (pT -> depth) + 1, num_files);
+        FileNode** dirs_to_push = pTs_to_push(dirs, (pT -> depth) + 1, num_dirs);
+        
+        if(num_dirs != 0){
+            stack = push_multiple(stack, dirs_to_push, num_dirs);
+        }
+        if(num_files != 0){
+            stack = push_multiple(stack, files_to_push, num_files);	
+        }
+            dfs(stack);
+            chdir("..");
+    }else{
+        char cwd[1024];
+        memset(cwd, '\0', 1024 * sizeof(char));
+        getcwd(cwd, sizeof(cwd));
+        char* new_file_list = (char*) malloc( (strlen(cwd) + strlen(pT->name) + 2) * sizeof(char) );
+        strcpy(new_file_list, cwd);
+        strcat(new_file_list, "/");
+        strcat(new_file_list, pT->name);
+        printf("%s\n", new_file_list);
+        dfs(stack);
+    }
+
 }
 
 void print_stack(Stack* stack){
@@ -115,18 +150,19 @@ void print_stack(Stack* stack){
 // 	temp -> depth = 1;
 // 	stack = push(stack, temp);
 
-//     int last_depth = 1;
-// 	FileNode* pT = get_next_file(stack, last_depth);
-//     // print_stack(stack);
-// 	printf("%s\n", pT -> name);
-// 	while(true){
-//         last_depth = pT -> depth;
-//         pT = get_next_file(stack, last_depth);
-//         // print_stack(stack);
-//     	if(pT == NULL) break;
-//         if(is_directory(pT->name)) break;
-//         printf("%s\n", pT -> name);
-//     }
+//     dfs(stack);
+//     // int last_depth = 1;
+// 	// FileNode* pT = get_next_file(stack, last_depth);
+//     // // print_stack(stack);
+// 	// printf("%s\n", pT -> name);
+// 	// while(true){
+//     //     last_depth = pT -> depth;
+//     //     pT = get_next_file(stack, last_depth);
+//     //     // print_stack(stack);
+//     // 	if(pT == NULL) break;
+//     //     if(is_directory(pT->name)) break;
+//     //     printf("%s\n", pT -> name);
+//     // }
 
 // 	return 0;
 // }
