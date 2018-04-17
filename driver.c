@@ -74,6 +74,13 @@ TrieNode* merge_all(TrieNode* g_trie, TrieNode** trie_list, int num_threads, int
     return g_trie;
 }
 
+char** get_files(char* path, int* size, int* capacity){
+    char** arr = (char**) malloc((*capacity) * sizeof(char*));
+    arr = listdir(path, arr, size, capacity);
+    return arr;
+
+}
+
 void main(int argc, char* argv[]){
     /*
         argv[1] : path to the root directory
@@ -87,6 +94,9 @@ void main(int argc, char* argv[]){
     int num_threads = atoi(argv[2]);
     omp_set_num_threads(num_threads);
 
+    // Setting value of top k
+    int k = atoi(argv[3]);
+
     // Initialization of Thread-level tries
     TrieNode** trie_list = init_tries(num_threads);
 
@@ -99,39 +109,65 @@ void main(int argc, char* argv[]){
     // Loading the stopwords
     char** list_of_words = load_stopwords();
 
+    // Get all the file path
+    int size = 0, capacity = 2;
+    char** file_list = get_files(argv[1], &size, &capacity);
+
+    // Error recovery
+    // int size = 1, capacity = 2;
+    // char** file_list = (char**) malloc((capacity) * sizeof(char*));
+    // file_list[0] = "/home/parcom/shared/simple/articles/m/a/n//Mandir.html";
+    // iterator
+    int i = 0;
+    FILE* doc;
+    int id;
     // Making of thread level Tries
+    double starttime = omp_get_wtime();
+
     #pragma omp parallel default(shared)
     {
-        FileNode* pT;
-        int last_doc = 0;
-        FILE* doc;
-        int id = omp_get_thread_num();
-
-        // Update of Thread-Level Trie on receiving a document
-        while(true){
-            #pragma omp critical (new)
-            {
-                pT = get_next_file(stack, last_depth);
-                if(pT != NULL){
-                    last_depth = pT -> depth;
-                    int id = omp_get_thread_num();
-                    // printf("Fname: %s : %d \n", pT->name, id);
-                    doc = fopen(pT->name, "r");
-                    if(doc == NULL){
-                        perror("Can not open File");
-                    }
-                }
+        #pragma omp for private(i, doc, id) schedule(dynamic, 1)
+        for(i = 0; i < size; i++){
+            id = omp_get_thread_num();
+            doc = fopen(file_list[i], "r");
+            if(doc == NULL){
+                perror("Can not open File");
+            }else{
+                // printf("%s\n", file_list[i]);
+                process_doc(doc, trie_list[id], i+1, list_of_words);
+                fclose(doc);
             }
-            if(pT == NULL) break;
-            
-            process_doc(doc, trie_list[id], last_doc+1, list_of_words);
-            last_doc++;
-            fclose(doc);
         }
-        #pragma omp barrier
+        // FileNode* pT;
+        // int last_doc = 0;
+        // FILE* doc;
+        // int id = omp_get_thread_num();
+
+        // // Update of Thread-Level Trie on receiving a document
+        // while(true){
+        //     #pragma omp critical (new)
+        //     {
+        //         pT = get_next_file(stack, last_depth);
+        //         if(pT != NULL){
+        //             last_depth = pT -> depth;
+        //             // int id = omp_get_thread_num();
+        //             // printf("Fname: %s : %d \n", pT->name, id);
+        //             doc = fopen(pT->name, "r");
+        //             if(doc == NULL){
+        //                 perror("Can not open File");
+        //             }
+        //         }
+        //     }
+        //     if(pT == NULL) break;
+            
+        //     process_doc(doc, trie_list[id], last_doc+1, list_of_words);
+        //     last_doc++;
+        //     fclose(doc);
+        // }
+        // #pragma omp barrier
 
         // Merging of all the Thread-Level Tries
-        int i;
+        // int i;
         #pragma omp for private(i) schedule(dynamic, 1)
         for(i = 0; i < 26; i++){
             g_trie = merge_all(g_trie, trie_list, num_threads, i);
@@ -149,11 +185,15 @@ void main(int argc, char* argv[]){
     // printf("\nfinal\n");
     // g_trie = print_trie(g_trie, -1, buffer, 0);
 
-    int heapsize = 0, capacity= 2;
+    int heapsize = 0;
+    capacity = 2;
     MaxHeapNode** test = (MaxHeapNode**) malloc(capacity * sizeof(MaxHeapNode*));
     test = make_heap_from_trie(g_trie, test, &heapsize, &capacity, -1, buffer, 0);
     // printf("%d %d\n", heapsize, capacity);
-    print(test, heapsize);
+    // print(test, heapsize);
     test = buildHeap(test, heapsize - 1);
-    print_topk(test, &heapsize, 2);
+    // print_topk(test, &heapsize, k);
+
+    double timeTotal = (omp_get_wtime() - starttime);
+    printf("No of threads: %d \n Total time: %14.5f ",num_threads, timeTotal);
 }

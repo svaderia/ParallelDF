@@ -31,4 +31,8 @@ char** get_dir_list(char* folder_name, int* dir_count);
 Stack* push_multiple(Stack* stack, FileNode** data, int size);
 // Adds Nodes with data Element to the front of the Stack.
 
+char** add_file(char** arr, int* size, int* capacity, char* path);
+
+char** listdir(const char *name, char** arr, int* size, int* capacity);
+
 #endif
