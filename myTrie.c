@@ -98,7 +98,9 @@ TrieNode* print_trie(TrieNode* root, int alpha, char* buffer, int iter){
         printf("%s\n", buffer);
     }
 
-    for(int i = 0; i < ALPHABET_SIZE; i++){
+    int i;
+    
+    for( i = 0; i < ALPHABET_SIZE; i++){
         if(root -> children[i] && alpha == -1){
             root -> children[i] = print_trie(root -> children[i], i, buffer, iter);
         }else if(root -> children[i]){

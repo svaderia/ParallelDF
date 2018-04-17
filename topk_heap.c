@@ -50,21 +50,24 @@ MaxHeapNode** delete_max(MaxHeapNode** arr, int* size){
 }
 
 MaxHeapNode** buildHeap(MaxHeapNode** arr, int size){
-	for(int j = size / 2; j >= 0; j--){
+    int j;
+	for( j = size / 2; j >= 0; j--){
 		arr = maxHeapify(arr, size, j);
 	}
 	return arr;
 }
 
 void print(MaxHeapNode** arr, int size){
-	for(int i = 0; i < size; i++){
+	int i;
+    for( i = 0; i < size; i++){
 		printf("%d\t", arr[i] -> frequency);
 	}
     printf("\n");
 }
 
 void print_topk(MaxHeapNode** arr, int* size, int k){
-    for(int i = 0; i < k; i++){
+    int i;
+    for( i = 0; i < k; i++){
         printf("%d : %s\n", arr[0] -> frequency, arr[0] -> word);
         arr = delete_max(arr, size);
     }
@@ -102,7 +105,9 @@ MaxHeapNode** make_heap_from_trie(TrieNode* root, MaxHeapNode** arr, int* arr_si
 		arr = add_to_heap(root, arr, arr_size, capacity, buffer, iter);
 	}
 
-	for(int i = 0; i < ALPHABET_SIZE; i++){
+    int i;
+    
+	for( i = 0; i < ALPHABET_SIZE; i++){
 		if(root -> children[i] && alpha == -1){
 			arr = make_heap_from_trie(root -> children[i], arr, arr_size, capacity, i, buffer, iter);
 		}else if(root -> children[i]){
